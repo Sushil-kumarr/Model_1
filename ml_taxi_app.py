@@ -11,9 +11,8 @@ st.title("Taxi Fare Prediction App (End-to-End ML)")
 
 @st.cache_data
 def load_data():
-    url = "taxis.csv"
+    url = "https://raw.githubusercontent.com/mwaskom/seaborn-data/master/taxis.csv"
     df = pd.read_csv(url)
-    df = df.convert_dtypes()
     return df
 
 df = load_data()
@@ -25,6 +24,8 @@ df = df[['distance', 'fare']].dropna()
 
 df['distance'] = pd.to_numeric(df['distance'], errors='coerce')
 df['fare'] = pd.to_numeric(df['fare'], errors='coerce')
+
+df = df.dropna()
 
 X = df[['distance']]
 y = df['fare']
@@ -70,3 +71,12 @@ if st.button("Predict Fare"):
     input_data = np.array([[distance]])
     prediction = model.predict(input_data)
     st.success(f"Estimated Fare: ${prediction[0]:.2f}")
+
+st.subheader("Distance vs Fare")
+
+fig, ax = plt.subplots()
+ax.scatter(df['distance'], df['fare'])
+ax.set_xlabel("Distance")
+ax.set_ylabel("Fare")
+
+st.pyplot(fig)
